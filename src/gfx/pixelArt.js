@@ -108,6 +108,40 @@ export const PLAYER_SLIDE = [
   '................',
 ];
 
+// Generic bedsheet ghost (80s enemy). Recoloured blue when you have a power orb.
+export const GHOST = [
+  '....oooo....',
+  '..oowwwwoo..',
+  '.owwwwwwwwo.',
+  '.owwkwwkwwo.',
+  'owwwkwwkwwwo',
+  'owwwwwwwwwwo',
+  'owwwwwwwwwwo',
+  'owwkwkwkwwwo',
+  'owwwwwwwwwwo',
+  'owwwwwwwwwwo',
+  'owowwowwowwo',
+  'o.oo.oo.oo.o',
+];
+export const GHOST_COLORS = { o: '#2a0a4a', w: '#ff71ce', k: '#ffffff' };
+export const GHOST_SCARED_COLORS = { o: '#000033', w: '#2b4cff', k: '#ffffff' };
+
+export const ORB = [
+  '...yyy...',
+  '.yywwwyy.',
+  '.ywwwwwy.',
+  'ywwwwwwwy',
+  'ywwwwwwwy',
+  'ywwwwwwwy',
+  '.ywwwwwy.',
+  '.yywwwyy.',
+  '...yyy...',
+];
+export const ORB_COLORS = { y: '#ffd93b', w: '#fffbe0' };
+
+// The shot you fire at a boss after grabbing an orb.
+export const PLAYER_SHOT = ['..yyyy..', 'yywwwwyy', 'yywwwwyy', '..yyyy..'];
+
 export const HEART = [
   '.rr.rr.',
   'rrrrrrr',

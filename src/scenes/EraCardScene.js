@@ -14,7 +14,7 @@ export default class EraCardScene extends Phaser.Scene {
     const cx = GAME_W / 2;
     this.cameras.main.setBackgroundColor(era.palette.bg);
 
-    if (data.retry) this.add.text(cx, 30, 'TRY AGAIN', textStyle(8, '#ffffff')).setOrigin(0.5);
+    if (data.retry) this.add.text(cx, 30, data.startAtBoss ? 'TRY AGAIN - BOSS' : 'TRY AGAIN', textStyle(8, '#ffffff')).setOrigin(0.5);
     this.add.text(cx, 62, era.year, textStyle(32, era.palette.text)).setOrigin(0.5);
     this.add.text(cx, 96, era.age, textStyle(8, '#ffffff')).setOrigin(0.5);
     this.add.text(cx, 114, era.title, textStyle(8, era.palette.accent)).setOrigin(0.5);

@@ -5,6 +5,7 @@ import { ERAS } from '../eras/index.js';
 import {
   makePixelTexture, makeCanvasTexture,
   PLAYER_RUN_1, PLAYER_RUN_2, PLAYER_JUMP, PLAYER_SLIDE, HEART,
+  GHOST, GHOST_COLORS, GHOST_SCARED_COLORS, ORB, ORB_COLORS, PLAYER_SHOT,
 } from '../gfx/pixelArt.js';
 
 export default class BootScene extends Phaser.Scene {
@@ -25,9 +26,19 @@ export default class BootScene extends Phaser.Scene {
 
       makeCanvasTexture(this, `sky-${id}`, GAME_W, GROUND_Y, (ctx, w, h) => era.drawSky(ctx, w, h));
       makeCanvasTexture(this, `ground-${id}`, 32, GAME_H - GROUND_Y, (ctx, w, h) => era.drawGroundTile(ctx, w, h));
+
+      makePixelTexture(this, `memory-${id}`, era.memorySprite.rows, era.memorySprite.colors);
+      makeCanvasTexture(this, `boss-${id}`, era.boss.w, era.boss.h, (ctx) => era.boss.draw(ctx));
+      era.boss.shots.forEach((s, i) => makePixelTexture(this, `shot-${id}-${i}`, s.rows, s.colors));
     }
 
     makePixelTexture(this, 'heart', HEART, { r: '#ff3355' });
+    makePixelTexture(this, 'ghost', GHOST, GHOST_COLORS);
+    makePixelTexture(this, 'ghost-scared', GHOST, GHOST_SCARED_COLORS);
+    makePixelTexture(this, 'ghost-flash', GHOST, { ...GHOST_SCARED_COLORS, w: '#ffffff', k: '#2b4cff' });
+    makePixelTexture(this, 'orb', ORB, ORB_COLORS);
+    makePixelTexture(this, 'pshot', PLAYER_SHOT, ORB_COLORS);
+    makeCanvasTexture(this, 'px', 2, 2, (ctx) => { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 2, 2); });
 
     // Horizontal CRT scanlines, overlaid with per-era alpha.
     makeCanvasTexture(this, 'scanlines', GAME_W, GAME_H, (ctx, w, h) => {

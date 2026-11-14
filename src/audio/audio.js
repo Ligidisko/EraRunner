@@ -65,6 +65,29 @@ export const sfx = {
   },
   hit: () => { noise(0.25, 0.3); tone(140, 0.3, { type: 'sawtooth', vol: 0.15, slideTo: 60 }); },
   select: () => tone(660, 0.1, { vol: 0.12 }),
+  near: () => tone(1400, 0.05, { type: 'triangle', vol: 0.1 }),
+  mult: () => {
+    if (!ctx) return;
+    tone(1047, 0.06, { vol: 0.1 });
+    tone(1568, 0.1, { vol: 0.1, when: ctx.currentTime + 0.06 });
+  },
+  power: () => {
+    if (!ctx) return;
+    ['C5', 'G5', 'C6', 'G6'].forEach((n, i) => tone(noteToFreq(n), 0.08, { vol: 0.1, when: ctx.currentTime + i * 0.05 }));
+  },
+  eat: () => tone(200, 0.18, { type: 'square', vol: 0.12, slideTo: 1400 }),
+  shoot: () => tone(900, 0.12, { type: 'square', vol: 0.06, slideTo: 200 }),
+  zap: () => tone(400, 0.2, { type: 'sawtooth', vol: 0.1, slideTo: 1600 }),
+  bossHit: () => { noise(0.15, 0.25); tone(90, 0.2, { type: 'square', vol: 0.15 }); },
+  bossDown: () => {
+    if (!ctx) return;
+    noise(0.8, 0.3);
+    ['G4', 'E4', 'C4', 'G3'].forEach((n, i) => tone(noteToFreq(n), 0.2, { type: 'square', vol: 0.12, when: ctx.currentTime + i * 0.15 }));
+  },
+  memory: () => {
+    if (!ctx) return;
+    ['C5', 'E5', 'G5', 'C6', 'E6', 'G6'].forEach((n, i) => tone(noteToFreq(n), 0.25, { type: 'triangle', vol: 0.14, when: ctx.currentTime + i * 0.09 }));
+  },
   eraClear: () => {
     if (!ctx) return;
     ['C5', 'E5', 'G5', 'C6'].forEach((n, i) => tone(noteToFreq(n), 0.18, { vol: 0.12, when: ctx.currentTime + i * 0.12 }));

@@ -18,13 +18,13 @@ export default class EndScene extends Phaser.Scene {
     this.add.rectangle(cx, 120, GAME_W, 60, 0x5a3a22);
     this.add.rectangle(cx, 91, GAME_W, 3, 0x7a5232);
 
-    // One memory per completed era, shown with that era's obstacle sprite as a stand-in icon.
-    // TODO(art): swap in proper memory-item sprites (cassette player, virtual pet, flip phone).
+    // One memory item per completed era, dropped onto the desk one after another.
     const items = data.memories || [];
     items.forEach((eraId, i) => {
       const era = ERAS.find((e) => e.id === eraId);
       const x = cx + (i - (items.length - 1) / 2) * 90;
-      this.add.image(x, 80, `low-${eraId}`).setScale(2).setOrigin(0.5, 1);
+      const img = this.add.image(x, -20, `memory-${eraId}`).setScale(3).setOrigin(0.5, 1);
+      this.tweens.add({ targets: img, y: 91, duration: 700, delay: 600 + i * 450, ease: 'Bounce.Out', onStart: () => sfx.coin() });
       // One word per line so three labels fit side by side.
       this.add.text(x, 98, era.memory.toUpperCase().replace(' ', '\n'), { ...textStyle(8, '#ffe8c2'), align: 'center', lineSpacing: 2 }).setOrigin(0.5, 0);
     });

@@ -54,6 +54,58 @@ export default {
     rows: ['..yyy..', '.ydddy.', 'ydwwwdy', 'ydwdwdy', 'ydwwwdy', '.ydddy.', '..yyy..'],
   },
 
+  memoryLine: 'You kept it alive. Mostly.',
+  memorySprite: {
+    colors: { o: '#222222', p: '#ff7eb6', k: '#333333', g: '#9bbc0f', w: '#ffffff' },
+    rows: [
+      '......oooo......',
+      '....oppppppo....',
+      '...oppppppppo...',
+      '..oppkkkkkkppo..',
+      '..opkggggggkpo..',
+      '..opkgoggogkpo..',
+      '..opkggggggkpo..',
+      '..opkgoooogkpo..',
+      '..opkggggggkpo..',
+      '..oppkkkkkkppo..',
+      '..oppppppppppo..',
+      '..oppwppwppwpo..',
+      '...oppppppppo...',
+      '....oppppppo....',
+      '.....oooooo.....',
+    ],
+  },
+
+  boss: {
+    name: 'THE Y2K BUG',
+    tagline: '11:59:59 PM  12/31/1999',
+    duration: 25,
+    fireEvery: [1.3, 0.65],
+    shotSpeed: 180,
+    w: 42,
+    h: 30,
+    shots: [
+      { colors: { g: '#39ff14', k: '#000000' }, rows: ['kkkkkkk', 'kkgggkk', 'kgkkkgk', 'kgkkggk', 'kgkgkgk', 'kggkkgk', 'kgkkkgk', 'kkgggkk', 'kkkkkkk'] },
+      { colors: { g: '#39ff14', k: '#000000' }, rows: ['kkkkkkk', 'kkkgkkk', 'kkggkkk', 'kkkgkkk', 'kkkgkkk', 'kkkgkkk', 'kkkgkkk', 'kkgggkk', 'kkkkkkk'] },
+    ],
+    // A beetle whose head is a beige CRT stuck on "00".
+    draw(ctx) {
+      const R = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+      ctx.fillStyle = '#000000';
+      ctx.beginPath(); ctx.ellipse(30, 16, 11, 9, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#2e7d32';
+      ctx.beginPath(); ctx.ellipse(30, 16, 10, 8, 0, 0, Math.PI * 2); ctx.fill();
+      R('#66bb6a', 25, 10, 2, 12); R('#66bb6a', 31, 9, 2, 14); R('#66bb6a', 36, 11, 2, 10);
+      for (let i = 0; i < 3; i++) { R('#000000', 23 + i * 6, 23, 1, 6); R('#000000', 22 + i * 6, 28, 3, 1); }
+      R('#000000', 4, 0, 1, 5); R('#000000', 15, 0, 1, 5);
+      R('#e84855', 3, 0, 3, 2); R('#e84855', 14, 0, 3, 2);
+      R('#000000', 0, 4, 20, 18); R('#d8d0b0', 1, 5, 18, 16); R('#111111', 3, 7, 14, 10);
+      const g = '#39ff14';
+      for (const x of [5, 11]) { R(g, x, 9, 4, 1); R(g, x, 14, 4, 1); R(g, x, 9, 1, 6); R(g, x + 3, 9, 1, 6); }
+      R('#a89f80', 7, 21, 6, 2);
+    },
+  },
+
   drawSky(ctx, w, h) {
     ctx.fillStyle = '#1b998b';
     ctx.fillRect(0, 0, w, h);

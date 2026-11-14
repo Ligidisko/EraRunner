@@ -54,6 +54,60 @@ export default {
     rows: ['...nnn', '...nln', '...n..', '...n..', '.nnn..', 'nlln..', '.nn...'],
   },
 
+  memoryLine: '3 new texts. 160 characters each.',
+  memorySprite: {
+    colors: { o: '#222222', s: '#b0b8c0', b: '#4fc3f7', w: '#ffffff', k: '#555b62', a: '#888888' },
+    rows: [
+      '.........a..',
+      '.........a..',
+      '..oooooooo..',
+      '..osssssso..',
+      '..osbbbbso..',
+      '..osbwwbso..',
+      '..osbbbbso..',
+      '..osssssso..',
+      '..oooooooo..',
+      '...osssso...',
+      '..oooooooo..',
+      '..okkkkkko..',
+      '..okwkwkwo..',
+      '..okkkkkko..',
+      '..okwkwkwo..',
+      '..okkkkkko..',
+      '..oooooooo..',
+    ],
+  },
+
+  boss: {
+    name: 'POP-UP KING',
+    tagline: 'CONGRATULATIONS! YOU WON!!!',
+    duration: 25,
+    fireEvery: [1.2, 0.6],
+    shotSpeed: 195,
+    w: 44,
+    h: 40,
+    shots: [
+      { colors: { b: '#1565c0', r: '#e53935', w: '#ffffff', k: '#444444', y: '#ffeb3b', o: '#888888' }, rows: ['bbbbbbbrwr', 'bbbbbbbrrr', 'wwwwwwwwww', 'wkkkkwwwww', 'wwwwwwwwww', 'wkkwwwyyyw', 'wwwwwwyyyw', 'oooooooooo'] },
+      { colors: { r: '#e53935', w: '#ffffff' }, rows: ['.rrrrr.', 'rwrrrwr', 'rrwrwrr', 'rrrwrrr', 'rrwrwrr', 'rwrrrwr', '.rrrrr.'] },
+    ],
+    // A giant spam window with angry eyes and a "WIN!" banner.
+    draw(ctx) {
+      const R = (c, x, y, w, h) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
+      R('#000000', 0, 0, 44, 40);
+      R('#1565c0', 1, 1, 42, 7); R('#42a5f5', 1, 1, 42, 2);
+      R('#e53935', 35, 2, 6, 5);
+      for (let k = 0; k < 3; k++) { R('#ffffff', 36 + k, 3 + k, 1, 1); R('#ffffff', 38 - k, 3 + k, 1, 1); }
+      R('#ffffff', 1, 8, 42, 31);
+      R('#000000', 9, 12, 6, 2); R('#000000', 29, 12, 6, 2);
+      R('#e53935', 11, 14, 3, 3); R('#e53935', 31, 14, 3, 3);
+      R('#ffeb3b', 6, 20, 32, 10);
+      ctx.fillStyle = '#e53935';
+      ctx.font = '8px "Press Start 2P"';
+      ctx.fillText('WIN!', 7, 29);
+      R('#bdbdbd', 7, 33, 12, 4); R('#bdbdbd', 25, 33, 12, 4);
+    },
+  },
+
   drawSky(ctx, w, h) {
     const g = ctx.createLinearGradient(0, 0, 0, h);
     g.addColorStop(0, '#3a8dde');
