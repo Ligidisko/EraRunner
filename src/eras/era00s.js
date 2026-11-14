@@ -12,6 +12,23 @@ export default {
   doubleJump: true,
   scanlines: 0, // no CRT any more — flat panels!
 
+  // GAMEPLAY: a 4-lane rhythm game (see RhythmScene).
+  scene: 'Rhythm',
+  hud: '00s',
+  songLoops: 12, // loops of the era song before the boss song
+  bossLoops: 10,
+  controls: {
+    device: 'keyboard', // drawn as a keyboard's arrow cluster
+    keys: [{ code: 'LEFT', label: '<' }, { code: 'DOWN', label: 'v' }, { code: 'UP', label: '^' }, { code: 'RIGHT', label: '>' }],
+    tutorial: 'HIT THE ARROWS ON THE BEAT!',
+    required: ['LEFT', 'DOWN', 'UP', 'RIGHT'],
+  },
+  slang: {
+    hit: ['EPIC FAIL!', 'PWNED!', 'OMG!', 'FAIL!'],
+    clear: ['LOL!', 'W00T!', 'BLING!', 'OWNED IT!'],
+    good: ['LOL!', 'ROFL!', 'BRB... JK!', 'W00T!'],
+  },
+
   palette: { bg: '#9fd8ff', text: '#0b3d91', accent: '#39b54a', ground: '#4caf50', line: '#e8fff0' },
   player: { h: '#5a3a1a', s: '#f3c49b', o: '#222222', c: '#222222', p: '#4a6fa5' },
 

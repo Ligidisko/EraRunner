@@ -57,8 +57,20 @@ export default {
     rows: ['..yyy..', '.yyyyy.', 'yywyyyy', 'yyyyyyd', 'yyyyyyd', '.yyyyd.', '..ddd..'],
   },
 
-  // Era mechanic: ghosts fly at you; grab a power orb and they turn blue — stomp them for points.
-  ghosts: true,
+  // GAMEPLAY: a fixed-screen arcade space shooter (see ShooterScene).
+  scene: 'Shooter',
+  hud: '80s',
+  controls: {
+    device: 'arcade', // drawn as an arcade stick + button
+    keys: [{ code: 'LEFT', label: '<' }, { code: 'RIGHT', label: '>' }, { code: 'SPACE', label: 'FIRE' }],
+    tutorial: 'MOVE < >   SPACE TO FIRE!',
+    required: ['SPACE'],
+  },
+  slang: {
+    hit: ['GAG ME!', 'BOGUS!', 'GROSS!', 'NO WAY!'],
+    clear: ['TUBULAR!', 'RADICAL!', 'GNARLY!', 'TOTALLY!'],
+    good: ['RAD!', 'FAR OUT!', 'WICKED!'],
+  },
 
   memoryLine: 'Side A. Rewound with a pencil.',
   memorySprite: {

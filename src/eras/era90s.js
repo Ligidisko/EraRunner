@@ -12,6 +12,24 @@ export default {
   doubleJump: true, // new mechanic this era
   scanlines: 0.12,
 
+  // GAMEPLAY: a 16-bit side-scrolling platformer you control (see PlatformerScene).
+  scene: 'Platformer',
+  hud: '90s',
+  length: 9000, // px to run before the boss
+  ghosts: true, // power orbs make ghosts edible
+  springs: true,
+  controls: {
+    device: 'pad', // drawn as a D-pad controller
+    keys: [{ code: 'RIGHT', label: '> RUN' }, { code: 'SPACE', label: 'JUMP' }, { code: 'DOWN', label: 'v SPIN' }],
+    tutorial: 'HOLD > TO RUN  SPACE JUMP  v SPIN',
+    required: ['RIGHT', 'SPACE', 'DOWN'],
+  },
+  slang: {
+    hit: ['NOT!', 'AS IF!', 'TALK TO THE HAND!', 'WHATEVER!'],
+    clear: ['DA BOMB!', 'BOOYAH!', 'PHAT!', 'ALL THAT!'],
+    good: ['SWEET!', 'BOOYAH!', 'NICE!'],
+  },
+
   palette: { bg: '#1b998b', text: '#fffd82', accent: '#ff9b71', ground: '#2d3047', line: '#e84855' },
   player: { h: '#2b1a0e', s: '#f1b98a', o: '#1a1a1a', c: '#7b2cbf', p: '#3a5a98' },
 

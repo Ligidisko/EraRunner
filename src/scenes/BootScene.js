@@ -6,6 +6,7 @@ import {
   makePixelTexture, makeCanvasTexture,
   PLAYER_RUN_1, PLAYER_RUN_2, PLAYER_JUMP, PLAYER_SLIDE, HEART,
   GHOST, GHOST_COLORS, GHOST_SCARED_COLORS, ORB, ORB_COLORS, PLAYER_SHOT,
+  SHIP, ALIENS, BOOMBOX, BOOMBOX_COLORS, SPRING, SPRING_COLORS, ARROW, LIFE, BIG_HEAD,
 } from '../gfx/pixelArt.js';
 
 export default class BootScene extends Phaser.Scene {
@@ -39,6 +40,25 @@ export default class BootScene extends Phaser.Scene {
     makePixelTexture(this, 'orb', ORB, ORB_COLORS);
     makePixelTexture(this, 'pshot', PLAYER_SHOT, ORB_COLORS);
     makeCanvasTexture(this, 'px', 2, 2, (ctx) => { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 2, 2); });
+
+    // 80s shooter
+    makePixelTexture(this, 'ship', SHIP, { o: '#05d9e8', w: '#ffffff' });
+    const alienColors = { squid: '#ff71ce', tape: '#ffd93b', vhs: '#3bff6e' };
+    for (const [type, frames] of Object.entries(ALIENS)) {
+      frames.forEach((rows, f) => makePixelTexture(this, `alien-${type}-${f}`, rows, { o: alienColors[type] }));
+    }
+    makePixelTexture(this, 'boombox', BOOMBOX, BOOMBOX_COLORS);
+    makePixelTexture(this, 'bullet', ['w', 'w', 'w', 'w', 'w'], { w: '#ffffff' });
+    makePixelTexture(this, 'abullet', ['w.', '.w', 'w.', '.w', 'w.', '.w'], { w: '#ffd93b' });
+
+    // 90s platformer
+    makePixelTexture(this, 'spring', SPRING, SPRING_COLORS);
+    makePixelTexture(this, 'life', LIFE, ERAS[1].player);
+    makePixelTexture(this, 'bighead', BIG_HEAD, ERAS[1].player);
+
+    // 00s rhythm
+    makePixelTexture(this, 'arrow', ARROW, { o: '#000000', w: '#ffffff' });
+    makePixelTexture(this, 'arrow-slot', ARROW, { o: '#ffffff', w: '#1e3a5f' });
 
     // Horizontal CRT scanlines, overlaid with per-era alpha.
     makeCanvasTexture(this, 'scanlines', GAME_W, GAME_H, (ctx, w, h) => {

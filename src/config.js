@@ -18,7 +18,8 @@ export const HIGH_BOTTOM = GROUND_Y - 8; // high obstacles: slide under
 export const GHOST_HIGH_BOTTOM = GROUND_Y - 11; // high ghosts bob a little, so sit higher
 export const ORB_Y = GROUND_Y - 34; // power orbs: need a jump to grab
 
-export const POWER_TIME = 6; // seconds ghosts stay blue after a power orb
+export const POWER_TIME = 8; // seconds ghosts stay blue after a power orb
+export const POWER_WARN = 2; // ghosts flash for the last N seconds of power
 export const MAX_MULT = 5;
 export const COINS_PER_MULT = 8; // coins in a row (no hits) to raise the multiplier
 

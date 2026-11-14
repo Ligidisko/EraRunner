@@ -75,7 +75,32 @@ export const sfx = {
     if (!ctx) return;
     ['C5', 'G5', 'C6', 'G6'].forEach((n, i) => tone(noteToFreq(n), 0.08, { vol: 0.1, when: ctx.currentTime + i * 0.05 }));
   },
-  eat: () => tone(200, 0.18, { type: 'square', vol: 0.12, slideTo: 1400 }),
+  // Each ghost in a chain chomps a little higher.
+  eat: (n = 0) => tone(200 * 1.25 ** n, 0.18, { type: 'square', vol: 0.12, slideTo: 1400 * 1.25 ** n }),
+  coinInsert: () => {
+    if (!ctx) return;
+    tone(1800, 0.05, { type: 'triangle', vol: 0.15 });
+    tone(2400, 0.25, { type: 'triangle', vol: 0.12, when: ctx.currentTime + 0.05 });
+  },
+  oneUp: () => {
+    if (!ctx) return;
+    ['E5', 'G5', 'E6', 'C6', 'D6', 'G6'].forEach((n, i) => tone(noteToFreq(n), 0.1, { vol: 0.1, when: ctx.currentTime + i * 0.08 }));
+  },
+  cheat: () => {
+    if (!ctx) return;
+    ['C5', 'C6', 'G5', 'C7'].forEach((n, i) => tone(noteToFreq(n), 0.12, { type: 'triangle', vol: 0.14, when: ctx.currentTime + i * 0.1 }));
+  },
+  blow: () => noise(0.7, 0.25), // whoooosh into the cartridge
+  static: () => noise(0.5, 0.18),
+  click: () => tone(120, 0.04, { type: 'square', vol: 0.2 }),
+  rewind: () => tone(200, 1.2, { type: 'sawtooth', vol: 0.06, slideTo: 2400 }),
+  boing: () => tone(180, 0.3, { type: 'triangle', vol: 0.18, slideTo: 900 }),
+  explode: () => { noise(0.4, 0.3); tone(80, 0.4, { type: 'square', vol: 0.12, slideTo: 30 }); },
+  // The classic 4-note march of an alien formation stepping across the screen.
+  step: (i) => tone([110, 98, 87, 82][i % 4], 0.08, { type: 'square', vol: 0.12 }),
+  pew: () => tone(1200, 0.1, { type: 'square', vol: 0.06, slideTo: 300 }),
+  ufo: () => tone(700, 0.25, { type: 'sine', vol: 0.05, slideTo: 900 }),
+  miss: () => tone(160, 0.15, { type: 'sawtooth', vol: 0.08, slideTo: 90 }),
   shoot: () => tone(900, 0.12, { type: 'square', vol: 0.06, slideTo: 200 }),
   zap: () => tone(400, 0.2, { type: 'sawtooth', vol: 0.1, slideTo: 1600 }),
   bossHit: () => { noise(0.15, 0.25); tone(90, 0.2, { type: 'square', vol: 0.15 }); },
@@ -94,15 +119,21 @@ export const sfx = {
   },
 };
 
+// Current audio-clock time (seconds). The rhythm game syncs notes to this.
+export const audioNow = () => (ctx ? ctx.currentTime : performance.now() / 1000);
+
 // Loops a song: { bpm, lead: {wave, vol, notes[]}, bass: {...} }. One note per 16th step.
-export function playMusic(song) {
+// Returns { start, stepDur, length } so gameplay can line up with the beat.
+export function playMusic(song, delay = 0.05) {
   stopMusic();
-  if (!ctx || !song) return;
+  if (!song) return null;
   const stepDur = 60 / song.bpm / 4;
   const tracks = [song.lead, song.bass].filter(Boolean);
   const length = Math.max(...tracks.map((t) => t.notes.length));
+  if (!ctx) return { start: audioNow() + delay, stepDur, length };
   let step = 0;
-  let nextTime = ctx.currentTime + 0.05;
+  let nextTime = ctx.currentTime + delay;
+  const info = { start: nextTime, stepDur, length };
   // Lookahead scheduler: every 25ms, queue any notes due in the next 100ms.
   musicTimer = setInterval(() => {
     while (nextTime < ctx.currentTime + 0.1) {
@@ -114,6 +145,7 @@ export function playMusic(song) {
       nextTime += stepDur;
     }
   }, 25);
+  return info;
 }
 
 export function stopMusic() {

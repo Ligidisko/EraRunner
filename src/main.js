@@ -1,12 +1,18 @@
 // Entry point: configures Phaser and registers every scene.
-// Scene flow: Boot -> Title -> EraCard -> Run -> (EraCard -> Run)... -> End
+// Flow: Boot -> Title (attract mode / demo) -> EraCard -> era game -> ... -> End
+//   era games: Shooter (1985) -> Platformer (1995) -> Rhythm (2005)
+//   out of lives: Continue -> (Initials) -> Title
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p';
 import { GAME_W, GAME_H } from './config.js';
 import BootScene from './scenes/BootScene.js';
 import TitleScene from './scenes/TitleScene.js';
 import EraCardScene from './scenes/EraCardScene.js';
-import RunScene from './scenes/RunScene.js';
+import ShooterScene from './scenes/ShooterScene.js';
+import PlatformerScene from './scenes/PlatformerScene.js';
+import RhythmScene from './scenes/RhythmScene.js';
+import ContinueScene from './scenes/ContinueScene.js';
+import InitialsScene from './scenes/InitialsScene.js';
 import EndScene from './scenes/EndScene.js';
 
 function start() {
@@ -19,7 +25,7 @@ function start() {
     backgroundColor: '#000000',
     physics: { default: 'arcade', arcade: { gravity: { y: 900 }, debug: false } },
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-    scene: [BootScene, TitleScene, EraCardScene, RunScene, EndScene],
+    scene: [BootScene, TitleScene, EraCardScene, ShooterScene, PlatformerScene, RhythmScene, ContinueScene, InitialsScene, EndScene],
   });
   if (import.meta.env.DEV) window.__game = game; // debugging handle in dev builds only
 }

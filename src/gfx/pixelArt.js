@@ -142,6 +142,91 @@ export const ORB_COLORS = { y: '#ffd93b', w: '#fffbe0' };
 // The shot you fire at a boss after grabbing an orb.
 export const PLAYER_SHOT = ['..yyyy..', 'yywwwwyy', 'yywwwwyy', '..yyyy..'];
 
+// ---- 80s shooter ----
+export const SHIP = [
+  '......o......',
+  '.....ooo.....',
+  '.....ooo.....',
+  '.ooooooooooo.',
+  'ooooooooooooo',
+  'oooowwwwwoooo',
+  'ooooooooooooo',
+  'oo.........oo',
+];
+// Original alien designs (not copies of any game's sprites), two frames each.
+export const ALIENS = {
+  squid: [
+    ['...ooooo...', '.ooooooooo.', 'oo.ooooo.oo', 'ooooooooooo', '..oo...oo..', '.oo.ooo.oo.', 'oo.......oo', '...........'],
+    ['...ooooo...', '.ooooooooo.', 'oo.ooooo.oo', 'ooooooooooo', '..oo...oo..', '..oo.o.oo..', '.oo.....oo.', '...........'],
+  ],
+  tape: [ // a cassette with legs
+    ['ooooooooooo', 'oo.ooooo.oo', 'o.o.ooo.o.o', 'oo.ooooo.oo', 'ooooooooooo', '.o.......o.', 'o.o.....o.o', '...........'],
+    ['ooooooooooo', 'oo.ooooo.oo', 'o.o.ooo.o.o', 'oo.ooooo.oo', 'ooooooooooo', '..o.....o..', '.o.o...o.o.', '...........'],
+  ],
+  vhs: [ // a video tape with legs
+    ['ooooooooooo', 'o.ooo.ooo.o', 'ooooooooooo', 'oo.o.o.o.oo', 'ooooooooooo', '..o.....o..', '.o.......o.', '...........'],
+    ['ooooooooooo', 'o.ooo.ooo.o', 'ooooooooooo', 'oo.o.o.o.oo', 'ooooooooooo', '...o...o...', '..o.....o..', '...........'],
+  ],
+};
+// A flying boombox: the bonus "mystery ship".
+export const BOOMBOX = [
+  '....kkkkkkkk....',
+  '...k........k...',
+  'kkkkkkkkkkkkkkkk',
+  'kwwwkooooookwwwk',
+  'kwkwkoyyyyokwkwk',
+  'kwwwkooooookwwwk',
+  'kkkkkkkkkkkkkkkk',
+];
+export const BOOMBOX_COLORS = { k: '#222222', w: '#ff71ce', o: '#c0c0c0', y: '#05d9e8' };
+
+// ---- 90s platformer ----
+export const SPRING = [
+  'oooooooooooo',
+  'orrrrrrrrrro',
+  'oooooooooooo',
+  '..o......o..',
+  '...o....o...',
+  '..o......o..',
+  '...o....o...',
+  'oooooooooooo',
+];
+export const SPRING_COLORS = { o: '#777777', r: '#e84855' };
+
+// ---- 00s rhythm: one arrow pointing up, rotated per lane and tinted ----
+export const ARROW = [
+  '.....oo.....',
+  '....owwo....',
+  '...owwwwo...',
+  '..owwwwwwo..',
+  '.owwwwwwwwo.',
+  'oooowwwwoooo',
+  '...owwwwo...',
+  '...owwwwo...',
+  '...owwwwo...',
+  '...owwwwo...',
+  '...oooooo...',
+];
+
+// Small icon for lives in reserve (90s / 00s HUDs).
+export const LIFE = ['.hhh.', 'hssh.', 'sosos', 'sssss', '.sss.'];
+
+// Big-head cheat: an oversized head drawn over the player.
+export const BIG_HEAD = [
+  '....hhhhhh....',
+  '..hhhhhhhhhh..',
+  '.hhhhhhhhhhhh.',
+  '.hhssssssssh..',
+  'hhsssssssssss.',
+  'hssoossssoosss',
+  'hssoossssoosss',
+  'hsssssssssssss',
+  '.sssssooossss.',
+  '.ssssssssssss.',
+  '..ssssssssss..',
+  '....ssssss....',
+];
+
 export const HEART = [
   '.rr.rr.',
   'rrrrrrr',
