@@ -12,6 +12,10 @@ export default {
   doubleJump: true, // new mechanic this era
   scanlines: 0.12,
 
+  // Soundtrack: "Litany to the Datastream Goddess" v1.11 by FoxSynergy, CC-BY 3.0 — see CREDITS.md.
+  track: 'music-90s',
+  trackFile: 'music/datastream_goddess_v1_11.mp3',
+
   // GAMEPLAY: a 16-bit side-scrolling platformer you control (see PlatformerScene).
   scene: 'Platformer',
   hud: '90s',

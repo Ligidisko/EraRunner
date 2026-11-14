@@ -5,6 +5,8 @@
 import Phaser from 'phaser';
 import '@fontsource/press-start-2p';
 import { GAME_W, GAME_H } from './config.js';
+import * as audio from './audio/audio.js';
+import { state } from './state.js';
 import BootScene from './scenes/BootScene.js';
 import TitleScene from './scenes/TitleScene.js';
 import EraCardScene from './scenes/EraCardScene.js';
@@ -27,7 +29,11 @@ function start() {
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     scene: [BootScene, TitleScene, EraCardScene, ShooterScene, PlatformerScene, RhythmScene, ContinueScene, InitialsScene, EndScene],
   });
-  if (import.meta.env.DEV) window.__game = game; // debugging handle in dev builds only
+  if (import.meta.env.DEV) { // debugging handles in dev builds only
+    window.__game = game;
+    window.__audio = audio;
+    window.__state = state;
+  }
 }
 
 // Wait for the pixel font so the first text we draw isn't in a fallback font.

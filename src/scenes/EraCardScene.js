@@ -67,13 +67,14 @@ export default class EraCardScene extends Phaser.Scene {
     this.tweens.add({ targets: head, scale: 1.1, duration: 300, yoyo: true, repeat: -1 });
     sfx.power();
 
-    this.buttons = {}; // key code -> { shape, label }
+    this.buttons = {}; // key code -> [shapes that light up when pressed]
     if (c.device === 'arcade') this.drawArcade();
     else if (c.device === 'pad') this.drawPad();
     else this.drawKeyboard();
+    this.drawKeycaps(c.keys); // the game is played on a keyboard: show the real keys too
 
-    this.add.text(cx, 138, c.tutorial, textStyle(8, '#ffffff', true)).setOrigin(0.5);
-    const hint = this.add.text(cx, 154, 'PRESS EACH BUTTON TO START', textStyle(8, '#888888')).setOrigin(0.5);
+    this.add.text(cx, 143, c.tutorial, textStyle(8, '#ffffff', true)).setOrigin(0.5);
+    const hint = this.add.text(cx, 157, 'PRESS EACH KEY TO START', textStyle(8, '#888888')).setOrigin(0.5);
     this.tweens.add({ targets: hint, alpha: 0.3, duration: 500, yoyo: true, repeat: -1 });
     this.add.text(GAME_W - 4, GAME_H - 9, 'ENTER: SKIP', textStyle(8, '#444444')).setOrigin(1, 0);
 
@@ -83,9 +84,10 @@ export default class EraCardScene extends Phaser.Scene {
       if (e.keyCode === K.ENTER) { this.startEra(); return; }
       const code = Object.keys(this.buttons).find((k) => K[k] === e.keyCode);
       if (!code) return;
-      const b = this.buttons[code];
-      b.shape.setFillStyle(0xffd93b);
-      this.tweens.add({ targets: b.shape, scale: 1.2, duration: 80, yoyo: true });
+      for (const shape of this.buttons[code]) {
+        shape.setFillStyle(0xffd93b);
+        this.tweens.add({ targets: shape, scale: 1.2, duration: 80, yoyo: true });
+      }
       sfx.select();
       this.pending.delete(code);
       if (this.pending.size === 0 && !this.going) {
@@ -98,11 +100,35 @@ export default class EraCardScene extends Phaser.Scene {
     });
   }
 
-  // Helper: a pressable button shape + its label underneath.
+  // Helper: a pressable button shape (+ optional label underneath).
   button(code, shape, label, labelY, labelX) {
     shape.setStrokeStyle(1, 0xffffff);
-    const lbl = this.add.text(labelX ?? shape.x, labelY ?? shape.y + 14, label, textStyle(8, '#ffffff', true)).setOrigin(0.5, 0);
-    this.buttons[code] = { shape, label: lbl };
+    if (label) this.add.text(labelX ?? shape.x, labelY ?? shape.y + 14, label, textStyle(8, '#ffffff', true)).setOrigin(0.5, 0);
+    (this.buttons[code] ||= []).push(shape);
+  }
+
+  // A row of keyboard keycaps under the controller: [<] [>] [SPACE] FIRE ...
+  drawKeycaps(keys) {
+    const KEY_NAMES = { LEFT: '<', RIGHT: '>', UP: '^', DOWN: 'v', SPACE: 'SPACE' };
+    const y = 126;
+    const parts = keys.map(({ code, label }) => {
+      const name = KEY_NAMES[code] ?? code;
+      const action = label.replace(/^[<>v^]\s*/, ''); // "> RUN" -> "RUN"
+      return { code, name, action: action === name || /^[<>v^]$/.test(action) ? '' : action };
+    });
+    // Measure the row so it can be centred.
+    const capW = (p) => p.name.length * 8 + 6;
+    const partW = (p) => capW(p) + (p.action ? p.action.length * 8 + 4 : 0);
+    const total = parts.reduce((s, p) => s + partW(p), 0) + (parts.length - 1) * 10;
+    let x = GAME_W / 2 - total / 2;
+    this.add.text(x - 4, y, 'KEYS', textStyle(8, '#666666')).setOrigin(1, 0.5);
+    for (const p of parts) {
+      const cap = this.add.rectangle(x + capW(p) / 2, y, capW(p), 12, 0x2a2a35).setStrokeStyle(1, 0xd8d0b0);
+      this.add.text(x + capW(p) / 2, y + 1, p.name, textStyle(8, '#ffffff')).setOrigin(0.5);
+      (this.buttons[p.code] ||= []).push(cap);
+      if (p.action) this.add.text(x + capW(p) + 4, y + 1, p.action, textStyle(8, '#ffd93b')).setOrigin(0, 0.5);
+      x += partW(p) + 10;
+    }
   }
 
   drawArcade() {
@@ -125,9 +151,10 @@ export default class EraCardScene extends Phaser.Scene {
     this.add.rectangle(110, 82, 30, 10, 0x222222);
     this.add.rectangle(110, 82, 10, 30, 0x222222);
     // Labels sit under the pad so they never cover the buttons.
-    this.button('RIGHT', this.add.rectangle(122, 82, 9, 9, 0x444444), '>RUN', 120, 132);
-    this.button('DOWN', this.add.rectangle(110, 94, 9, 9, 0x444444), 'vSPIN', 120, 84);
-    this.button('SPACE', this.add.circle(214, 76, 9, 0x7b2cbf), 'JUMP', 120, 214);
+    // Labels for the pad come from the keycap row underneath.
+    this.button('RIGHT', this.add.rectangle(122, 82, 9, 9, 0x444444));
+    this.button('DOWN', this.add.rectangle(110, 94, 9, 9, 0x444444));
+    this.button('SPACE', this.add.circle(214, 76, 9, 0x7b2cbf));
     this.add.circle(196, 92, 7, 0x6a6a74);
   }
 

@@ -6,7 +6,7 @@ import Phaser from 'phaser';
 import { GAME_W, GAME_H, textStyle } from '../config.js';
 import { ERAS } from '../eras/index.js';
 import { state, addScore } from '../state.js';
-import { playMusic, stopMusic, sfx } from '../audio/audio.js';
+import { playEraMusic, setEraMusicRate, stopMusic, sfx } from '../audio/audio.js';
 import { makeFx } from '../systems/fx.js';
 import Hud from '../systems/hud.js';
 import { loseLife, revealMemory, slang } from '../systems/reveal.js';
@@ -72,6 +72,7 @@ export default class ShooterScene extends Phaser.Scene {
       this.time.delayedCall(22000, () => this.scene.start('Title'));
     } else {
       this.hud = new Hud(this, '80s');
+      playEraMusic(this.era); // the soundtrack plays under the classic alien march
     }
     this.events.once('shutdown', stopMusic);
   }
@@ -313,7 +314,7 @@ export default class ShooterScene extends Phaser.Scene {
     this.boss = this.add.image(GAME_W / 2, -40, `boss-${this.era.id}`).setScale(1.25).setDepth(6);
     this.tweens.add({ targets: this.boss, y: 58, duration: 1500, ease: 'Back.Out' });
     this.fx.banner(this.era.boss.name, '#ff3355', this.era.boss.tagline);
-    playMusic({ ...this.era.music, bpm: this.era.music.bpm * 1.15 });
+    setEraMusicRate(this.era, 1.1);
     this.bossBarBg = this.add.rectangle(GAME_W / 2 - 50, 24, 100, 3, 0x000000, 0.7).setOrigin(0, 0.5).setDepth(90);
     this.bossBar = this.add.rectangle(GAME_W / 2 - 50, 24, 100, 3, 0xff3355).setOrigin(0, 0.5).setDepth(91);
   }

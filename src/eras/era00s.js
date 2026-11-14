@@ -12,6 +12,11 @@ export default {
   doubleJump: true,
   scanlines: 0, // no CRT any more — flat panels!
 
+  // Soundtrack: "Menu Music" by mrpoly, CC0 — see CREDITS.md. The rhythm chart
+  // is generated from this audio's beats at load time (see systems/autochart.js).
+  track: 'music-00s',
+  trackFile: 'music/menu_music_awesomeness.wav',
+
   // GAMEPLAY: a 4-lane rhythm game (see RhythmScene).
   scene: 'Rhythm',
   hud: '00s',

@@ -55,7 +55,12 @@ export default class TitleScene extends Phaser.Scene {
   showPanel() {
     this.panel.removeAll(true);
     const cx = GAME_W / 2;
-    const T = (x, y, s, size, color) => this.panel.add(this.add.text(x, y, s, textStyle(size, color, true)).setOrigin(0.5));
+    // Adds a text to the panel and returns the TEXT (container.add returns the container).
+    const T = (x, y, s, size, color) => {
+      const t = this.add.text(x, y, s, textStyle(size, color, true)).setOrigin(0.5);
+      this.panel.add(t);
+      return t;
+    };
     if (this.panelIndex === 0) {
       const title = T(cx, 40, 'ERA RUNNER', 24, '#ff71ce');
       this.tweens.addCounter({ from: 0, to: 360, duration: 3000, repeat: -1, onUpdate: (tw) => {
@@ -137,6 +142,7 @@ export default class TitleScene extends Phaser.Scene {
   cartridgeGlitch() {
     this.blowing = true;
     this.panelTimer.remove();
+    this.coinText.setVisible(false);
     this.panel.removeAll(true);
     this.glitch = this.add.graphics().setDepth(40);
     this.glitchEvent = this.time.addEvent({ delay: 90, loop: true, callback: () => {

@@ -1,10 +1,40 @@
-// Tiny Web Audio synth: sound effects + a looping chiptune sequencer.
-// Everything is generated in code, so there are no audio files to license.
-// (CC0 tracks from OpenGameArt can replace the music later; SFX can stay.)
+// Audio: synthesized sound effects + era music.
+// Each era plays a licensed track from public/music (see CREDITS.md) through
+// Phaser's sound manager; the code-synth chiptune sequencer below is the
+// fallback if a track can't load. SFX are always synthesized in code.
 
 let ctx = null;
 let master = null;
 let musicTimer = null;
+let soundManager = null; // Phaser's sound manager, set once by BootScene
+let track = null; // the currently playing era track
+
+export function setSoundManager(sm) { soundManager = sm; }
+
+// Plays a looping era track (a key loaded in BootScene). `rate` > 1 speeds it
+// up (used for bosses and power-ups). Returns false if the track isn't loaded.
+export function playTrack(key, { rate = 1, volume = 0.45, loop = true, delay = 0 } = {}) {
+  stopMusic();
+  if (!soundManager || !soundManager.game.cache.audio.exists(key)) return false;
+  track = soundManager.add(key, { loop, volume, rate });
+  track.play({ delay });
+  return true;
+}
+
+// Speeds the current era music up/down without restarting the track.
+export function setEraMusicRate(era, rate) {
+  if (track) track.setRate(rate);
+  else playMusic({ ...era.music, bpm: era.music.bpm * rate });
+}
+
+// The current track's sound object (the rhythm game syncs notes to it).
+export const currentTrack = () => track;
+
+// Plays the era's music: its licensed track if it has one, else the synth song.
+export function playEraMusic(era, rate = 1) {
+  if (era.track && playTrack(era.track, { rate })) return;
+  playMusic({ ...era.music, bpm: era.music.bpm * rate });
+}
 
 // Browsers only allow audio after a user gesture — call this on the first key press.
 export function initAudio() {
@@ -151,4 +181,5 @@ export function playMusic(song, delay = 0.05) {
 export function stopMusic() {
   if (musicTimer) clearInterval(musicTimer);
   musicTimer = null;
+  if (track) { track.stop(); track.destroy(); track = null; }
 }

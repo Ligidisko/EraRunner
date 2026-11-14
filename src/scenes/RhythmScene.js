@@ -7,7 +7,8 @@ import Phaser from 'phaser';
 import { GAME_W, GAME_H, textStyle } from '../config.js';
 import { ERAS } from '../eras/index.js';
 import { state, addScore } from '../state.js';
-import { playMusic, stopMusic, audioNow, sfx } from '../audio/audio.js';
+import { playMusic, playTrack, stopMusic, audioNow, sfx } from '../audio/audio.js';
+import { chartFromBuffer } from '../systems/autochart.js';
 import { onKeyPress } from '../systems/keys.js';
 import { makeFx } from '../systems/fx.js';
 import Hud from '../systems/hud.js';
@@ -73,6 +74,15 @@ export default class RhythmScene extends Phaser.Scene {
     });
     this.events.once('shutdown', stopMusic);
 
+    // If the era's licensed track loaded, chart it from its audio (once per session).
+    const buffer = this.era.track && this.cache.audio.get(this.era.track);
+    if (buffer && buffer.getChannelData) {
+      this.registry.get('charts') || this.registry.set('charts', {
+        main: chartFromBuffer(buffer, { minGap: 0.32, sensitivity: 1.6 }),
+        boss: chartFromBuffer(buffer, { minGap: 0.2, sensitivity: 1.35 }),
+      });
+      this.trackCharts = this.registry.get('charts');
+    }
     this.startSong('main');
   }
 
@@ -80,6 +90,8 @@ export default class RhythmScene extends Phaser.Scene {
 
   startSong(kind) {
     const boss = kind === 'boss';
+    if (this.trackCharts) { this.startTrackSong(kind); return; }
+    this.now = audioNow;
     const song = boss ? { ...this.era.music, bpm: this.era.music.bpm * 1.12 } : this.era.music;
     const loops = boss ? this.era.bossLoops : this.era.songLoops;
     const info = playMusic(song, 2.0); // 2s lead-in so the first notes can fall
@@ -93,7 +105,27 @@ export default class RhythmScene extends Phaser.Scene {
     this.countIn();
   }
 
-  // Notes follow the lead melody; density ramps up loop by loop.
+  // Licensed-track mode: notes come from the audio itself (auto-charted).
+  // Main song = the track once; boss song = the track again, faster and denser.
+  startTrackSong(kind) {
+    const boss = kind === 'boss';
+    const rate = boss ? 1.12 : 1;
+    const ctx = this.sound.context;
+    this.now = () => ctx.currentTime;
+    const lead = 2.0; // seconds of lead-in so the first notes can fall
+    playTrack(this.era.track, { rate, loop: false, delay: lead, volume: 0.6 });
+    this.songStart = ctx.currentTime + lead;
+    const { notes, duration } = this.trackCharts[kind];
+    this.chart = notes.map((n) => ({ time: this.songStart + n.t / rate, lane: n.lane }));
+    this.chartIndex = 0;
+    this.songEnd = this.songStart + duration / rate + 0.3;
+    this.phase = kind;
+    this.beat = 60 / 120 / rate;
+    this.lastBeat = -1;
+    this.countIn();
+  }
+
+  // Synth-song mode: notes follow the lead melody; density ramps up loop by loop.
   makeChart(song, info, loops, boss) {
     const notes = [];
     const lead = song.lead.notes;
@@ -127,7 +159,7 @@ export default class RhythmScene extends Phaser.Scene {
 
   update() {
     if (this.phase === 'reveal' || this.phase === 'between') { this.hud.update(); return; }
-    const now = audioNow();
+    const now = this.now();
 
     // Spawn notes that are about to become visible.
     while (this.chartIndex < this.chart.length && this.chart[this.chartIndex].time - now <= LEAD) {
@@ -157,7 +189,7 @@ export default class RhythmScene extends Phaser.Scene {
 
   press(lane) {
     if (this.phase !== 'main' && this.phase !== 'boss') return;
-    const now = audioNow();
+    const now = this.now();
     this.targets[lane].setTint(LANE_COLOR[lane]);
     this.time.delayedCall(90, () => this.targets[lane].clearTint());
 

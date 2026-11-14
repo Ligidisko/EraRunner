@@ -57,6 +57,10 @@ export default {
     rows: ['..yyy..', '.yyyyy.', 'yywyyyy', 'yyyyyyd', 'yyyyyyd', '.yyyyd.', '..ddd..'],
   },
 
+  // Soundtrack: "Dino" (instrumental) by Kim Lightyear, CC-BY 4.0 — see CREDITS.md.
+  track: 'music-80s',
+  trackFile: 'music/dino_instrumental.mp3',
+
   // GAMEPLAY: a fixed-screen arcade space shooter (see ShooterScene).
   scene: 'Shooter',
   hud: '80s',

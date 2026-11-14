@@ -1,7 +1,9 @@
-// Builds every texture once at startup, for every era, from the era data files.
+// Loads the era soundtracks (with a loading bar), then builds every texture
+// once at startup, for every era, from the era data files.
 import Phaser from 'phaser';
-import { GAME_W, GAME_H, GROUND_Y } from '../config.js';
+import { GAME_W, GAME_H, GROUND_Y, textStyle } from '../config.js';
 import { ERAS } from '../eras/index.js';
+import { setSoundManager } from '../audio/audio.js';
 import {
   makePixelTexture, makeCanvasTexture,
   PLAYER_RUN_1, PLAYER_RUN_2, PLAYER_JUMP, PLAYER_SLIDE, HEART,
@@ -12,7 +14,19 @@ import {
 export default class BootScene extends Phaser.Scene {
   constructor() { super('Boot'); }
 
+  preload() {
+    // A chunky "LOADING..." bar, like a cassette game loading.
+    this.add.text(GAME_W / 2, 70, 'LOADING...', textStyle(8, '#ffffff')).setOrigin(0.5);
+    this.add.rectangle(GAME_W / 2, 90, 162, 10, 0x000000).setStrokeStyle(1, 0xffffff);
+    const bar = this.add.rectangle(GAME_W / 2 - 80, 90, 0, 6, 0x3bff6e).setOrigin(0, 0.5);
+    this.load.on('progress', (p) => { bar.width = 160 * p; });
+    // A track that fails to load is skipped; that era falls back to synth music.
+    this.load.on('loaderror', (file) => console.warn('Could not load', file.key));
+    for (const era of ERAS) if (era.track) this.load.audio(era.track, era.trackFile);
+  }
+
   create() {
+    setSoundManager(this.sound);
     for (const era of ERAS) {
       const id = era.id;
       // Same player sprite, re-coloured per era: the kid "grows up" through palettes.

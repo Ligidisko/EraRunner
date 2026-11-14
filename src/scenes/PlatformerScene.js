@@ -10,7 +10,7 @@ import {
 } from '../config.js';
 import { ERAS } from '../eras/index.js';
 import { state, addScore } from '../state.js';
-import { playMusic, stopMusic, sfx } from '../audio/audio.js';
+import { playEraMusic, setEraMusicRate, stopMusic, sfx } from '../audio/audio.js';
 import { pickPattern } from '../systems/patterns.js';
 import { makeFx } from '../systems/fx.js';
 import Hud from '../systems/hud.js';
@@ -90,7 +90,7 @@ export default class PlatformerScene extends Phaser.Scene {
     this.speedText = this.add.text(GAME_W / 2, 20, '', textStyle(8, '#ffffff', true)).setOrigin(0.5, 0).setDepth(60);
 
     this.keys = this.input.keyboard.addKeys('SPACE,UP,W,DOWN,S,LEFT,A,RIGHT,D,N');
-    playMusic(this.era.music);
+    playEraMusic(this.era);
     this.events.once('shutdown', stopMusic);
     if (this.phase === 'boss') { this.phase = 'run'; this.dist = this.era.length; } // straight to boss
   }
@@ -299,7 +299,7 @@ export default class PlatformerScene extends Phaser.Scene {
     this.cameras.main.flash(120, 80, 100, 255);
     this.tweens.add({ targets: this.powerTint, fillAlpha: 0.16, duration: 200 });
     this.fx.banner('POWER UP!', '#6f8bff', 'GHOSTS ARE EDIBLE!');
-    playMusic({ ...this.era.music, bpm: this.era.music.bpm * 1.3 });
+    setEraMusicRate(this.era, 1.15);
     sfx.power();
   }
 
@@ -313,7 +313,7 @@ export default class PlatformerScene extends Phaser.Scene {
       g.setTexture('ghost');
       g.setVelocity(-this.speed * 0.5, -140);
     }
-    playMusic(this.era.music);
+    setEraMusicRate(this.era, 1);
   }
 
   onGhost(g) {
@@ -443,7 +443,7 @@ export default class PlatformerScene extends Phaser.Scene {
     this.progressBg.setVisible(false);
     if (this.power > 0) this.endPower();
     this.fx.banner(this.era.boss.name, '#ff3355', this.era.boss.tagline);
-    playMusic({ ...this.era.music, bpm: this.era.music.bpm * 1.2 });
+    playEraMusic(this.era, 1.1);
     this.boss = new Boss(this, this.era, () => { addScore(1000); this.reveal(); });
   }
 
