@@ -26,14 +26,15 @@ Boot -> Title (attract mode: title / high scores / memories / self-playing DEMO)
 | `src/save.js` | Top-10 high-score table with 3-letter initials (localStorage, safe if blocked) |
 | `src/eras/*.js` | One file per decade: palette, sprites, music, boss, slang, controls to unlock, which game it plays |
 | `src/scenes/ShooterScene.js` | 1985 arcade: marching alien formation, crumbling shields, flying-boombox bonus, The Cabinet boss |
-| `src/scenes/PlatformerScene.js` | 1995 console: momentum running, springs, caps that scatter when hit, power orbs make ghosts edible, Y2K Bug boss |
+| `src/scenes/PlatformerScene.js` | 1995 console: a scrolling level you explore left/right and up/down, momentum, stomps, spin attack, one-way platforms, bonus blocks, pits, springs, power orbs, Y2K Bug boss arena |
+| `src/levels/level90s.js` | The 1995 level as hand-made ASCII chunks (easy to edit: `#` block, `-` platform, `B` bonus block, `g` ghost...) |
 | `src/scenes/RhythmScene.js` | 2005 PC/mall: 4-lane rhythm game synced to the audio clock, phone signal-bar health, Pop-Up King song |
 | `src/scenes/EraCardScene.js` | TV channel change + controller art (arcade stick, then pad, then keyboard); press each new button to start |
 | `src/scenes/TitleScene.js` | Attract mode, coins/credits, cheat words, cartridge-blowing gag |
 | `src/scenes/ContinueScene.js`, `InitialsScene.js`, `EndScene.js` | Continue countdown, initials entry, memory-desk ending |
 | `src/systems/hud.js` | The HUD evolves too: arcade 1UP/HI-SCORE, a 16-bit panel, then a glossy aqua toolbar |
 | `src/systems/reveal.js` | Shared moments: decade-slang popups, losing a life, memory-item reveal, next era |
-| `src/systems/Boss.js`, `patterns.js`, `fx.js`, `keys.js` | Platformer boss, obstacle patterns, particles/popups, one-shot key presses |
+| `src/systems/Boss.js`, `autochart.js`, `fx.js`, `keys.js` | Y2K Bug boss, rhythm chart from audio, particles/popups, one-shot key presses |
 | `src/audio/audio.js` | Web Audio synth: all music and SFX generated in code (no licensing risk) |
 
 ## Key ideas to explain
@@ -47,7 +48,8 @@ Boot -> Title (attract mode: title / high scores / memories / self-playing DEMO)
 3. **Nostalgia moments.** Blowing on the cartridge, the TV channel changing between eras, "BE KIND,
    REWIND", decade slang ("TUBULAR!", "AS IF!", "PWNED!"), and each era's memory item landing on
    the desk at the end.
-4. **Fair design.** Coyote time and jump buffering in the platformer. Hits scatter your caps instead
+4. **Fair design.** Coyote time and jump buffering in the platformer, knockback on hits, and a
+   continue drops you back at the boss you died on. Hits scatter your caps instead
    of killing you. Ghosts flee when power runs out. Pressing a rhythm key on no note is never
    punished.
 5. **The rhythm game is in sync.** Notes are positioned from the Web Audio clock, not frame time,

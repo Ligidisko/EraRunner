@@ -33,8 +33,8 @@ export function makeFx(scene, dustHex) {
 
     // Big centred announcement ("SPEED UP!", boss names).
     banner(text, color = '#ffffff', sub = null) {
-      const t = scene.add.text(GAME_W / 2, 60, text, textStyle(16, color, true)).setOrigin(0.5).setDepth(80).setScale(0);
-      const s = sub ? scene.add.text(GAME_W / 2, 80, sub, textStyle(8, '#ffffff', true)).setOrigin(0.5).setDepth(80).setAlpha(0) : null;
+      const t = scene.add.text(GAME_W / 2, 60, text, textStyle(16, color, true)).setOrigin(0.5).setDepth(80).setScale(0).setScrollFactor(0);
+      const s = sub ? scene.add.text(GAME_W / 2, 80, sub, textStyle(8, '#ffffff', true)).setOrigin(0.5).setDepth(80).setAlpha(0).setScrollFactor(0) : null;
       scene.tweens.add({ targets: t, scale: 1, duration: 250, ease: 'Back.Out' });
       if (s) scene.tweens.add({ targets: s, alpha: 1, duration: 300, delay: 200 });
       scene.time.delayedCall(1400, () => {

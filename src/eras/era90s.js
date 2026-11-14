@@ -24,7 +24,7 @@ export default {
   springs: true,
   controls: {
     device: 'pad', // drawn as a D-pad controller
-    keys: [{ code: 'RIGHT', label: '> RUN' }, { code: 'SPACE', label: 'JUMP' }, { code: 'DOWN', label: 'v SPIN' }],
+    keys: [{ code: 'LEFT', label: '<' }, { code: 'RIGHT', label: '> RUN' }, { code: 'SPACE', label: 'JUMP' }, { code: 'DOWN', label: 'v SPIN' }],
     tutorial: 'HOLD > TO RUN  SPACE JUMP  v SPIN',
     required: ['RIGHT', 'SPACE', 'DOWN'],
   },

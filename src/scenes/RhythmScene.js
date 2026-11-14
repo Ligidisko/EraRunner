@@ -6,7 +6,7 @@
 import Phaser from 'phaser';
 import { GAME_W, GAME_H, textStyle } from '../config.js';
 import { ERAS } from '../eras/index.js';
-import { state, addScore } from '../state.js';
+import { state, addScore, takeResumeAtBoss } from '../state.js';
 import { playMusic, playTrack, stopMusic, audioNow, sfx } from '../audio/audio.js';
 import { chartFromBuffer } from '../systems/autochart.js';
 import { onKeyPress } from '../systems/keys.js';
@@ -31,6 +31,10 @@ export default class RhythmScene extends Phaser.Scene {
   constructor() { super('Rhythm'); }
 
   create() {
+    // Phaser reuses scene objects: reset per-run flags every time the scene starts.
+    this.boss = null;
+    this.bossBar = null;
+    this.head = null;
     this.era = ERAS.find((e) => e.scene === 'Rhythm');
     this.fx = makeFx(this, '#ffffff');
     this.combo = 0;
@@ -83,7 +87,8 @@ export default class RhythmScene extends Phaser.Scene {
       });
       this.trackCharts = this.registry.get('charts');
     }
-    this.startSong('main');
+    if (takeResumeAtBoss()) { this.phase = 'main'; this.chart = []; this.chartIndex = 0; this.songFinished(); } // straight to the boss song
+    else this.startSong('main');
   }
 
   // ---------- Songs + charts ----------

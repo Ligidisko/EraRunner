@@ -16,6 +16,9 @@ export default class EraCardScene extends Phaser.Scene {
 
   // data: { fresh?: new era (show unlock card), retry?: after a continue }
   create(data = {}) {
+    // Phaser reuses scene objects: reset per-run flags every time the scene starts.
+    this.started = false;
+    this.going = false;
     stopMusic();
     this.era = ERAS[state.eraIndex];
     this.data_ = data;
@@ -73,31 +76,42 @@ export default class EraCardScene extends Phaser.Scene {
     else this.drawKeyboard();
     this.drawKeycaps(c.keys); // the game is played on a keyboard: show the real keys too
 
-    this.add.text(cx, 143, c.tutorial, textStyle(8, '#ffffff', true)).setOrigin(0.5);
-    const hint = this.add.text(cx, 157, 'PRESS EACH KEY TO START', textStyle(8, '#888888')).setOrigin(0.5);
-    this.tweens.add({ targets: hint, alpha: 0.3, duration: 500, yoyo: true, repeat: -1 });
-    this.add.text(GAME_W - 4, GAME_H - 9, 'ENTER: SKIP', textStyle(8, '#444444')).setOrigin(1, 0);
+    this.add.text(cx, 143, 'TRY THE KEYS!', textStyle(8, '#ffffff', true)).setOrigin(0.5);
+    // Like an arcade "PRESS START": ENTER starts, and it starts by itself after
+    // a countdown so nobody gets stuck on this screen.
+    this.countdown = 8;
+    const hint = this.add.text(cx, 157, '', textStyle(8, '#3bff6e', true)).setOrigin(0.5);
+    const refreshHint = () => hint.setText(`PRESS ENTER TO START  (${this.countdown})`);
+    refreshHint();
+    this.tweens.add({ targets: hint, alpha: 0.4, duration: 500, yoyo: true, repeat: -1 });
+    this.time.addEvent({ delay: 1000, repeat: 7, callback: () => {
+      this.countdown--;
+      refreshHint();
+      if (this.countdown <= 0) this.ready();
+    } });
 
-    this.pending = new Set(c.required);
     onKeyPress(this, (e) => {
       const K = Phaser.Input.Keyboard.KeyCodes;
-      if (e.keyCode === K.ENTER) { this.startEra(); return; }
+      if (e.keyCode === K.ENTER) { this.ready(); return; }
+      // Any game key just lights up on the controller + keycaps: practice.
       const code = Object.keys(this.buttons).find((k) => K[k] === e.keyCode);
       if (!code) return;
       for (const shape of this.buttons[code]) {
+        const original = shape.fillColor;
         shape.setFillStyle(0xffd93b);
-        this.tweens.add({ targets: shape, scale: 1.2, duration: 80, yoyo: true });
+        this.time.delayedCall(180, () => shape.active && shape.setFillStyle(original));
       }
       sfx.select();
-      this.pending.delete(code);
-      if (this.pending.size === 0 && !this.going) {
-        this.going = true;
-        const ready = this.add.text(cx, 74, 'GET READY!', textStyle(16, '#3bff6e', true)).setOrigin(0.5).setDepth(10);
-        this.tweens.add({ targets: ready, scale: { from: 0.3, to: 1 }, duration: 250, ease: 'Back.Out' });
-        sfx.eraClear();
-        this.time.delayedCall(900, () => this.startEra());
-      }
     });
+  }
+
+  ready() {
+    if (this.going) return;
+    this.going = true;
+    const ready = this.add.text(GAME_W / 2, 74, 'GET READY!', textStyle(16, '#3bff6e', true)).setOrigin(0.5).setDepth(10);
+    this.tweens.add({ targets: ready, scale: { from: 0.3, to: 1 }, duration: 250, ease: 'Back.Out' });
+    sfx.eraClear();
+    this.time.delayedCall(800, () => this.startEra());
   }
 
   // Helper: a pressable button shape (+ optional label underneath).
@@ -152,6 +166,7 @@ export default class EraCardScene extends Phaser.Scene {
     this.add.rectangle(110, 82, 10, 30, 0x222222);
     // Labels sit under the pad so they never cover the buttons.
     // Labels for the pad come from the keycap row underneath.
+    this.button('LEFT', this.add.rectangle(98, 82, 9, 9, 0x444444));
     this.button('RIGHT', this.add.rectangle(122, 82, 9, 9, 0x444444));
     this.button('DOWN', this.add.rectangle(110, 94, 9, 9, 0x444444));
     this.button('SPACE', this.add.circle(214, 76, 9, 0x7b2cbf));

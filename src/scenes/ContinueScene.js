@@ -11,6 +11,8 @@ export default class ContinueScene extends Phaser.Scene {
   constructor() { super('Continue'); }
 
   create() {
+    // Phaser reuses scene objects: reset per-run flags every time the scene starts.
+    this.done = false;
     stopMusic();
     const cx = GAME_W / 2;
     this.cameras.main.setBackgroundColor('#000010');

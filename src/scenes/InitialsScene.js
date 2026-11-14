@@ -13,6 +13,8 @@ export default class InitialsScene extends Phaser.Scene {
   constructor() { super('Initials'); }
 
   create(data) {
+    // Phaser reuses scene objects: reset per-run flags every time the scene starts.
+    this.done = false;
     const cx = GAME_W / 2;
     this.score = data.score;
     this.letters = [0, 0, 0];

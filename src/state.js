@@ -14,6 +14,7 @@ export const state = {
   nextExtraLife: EXTRA_LIFE_EVERY,
   cheats: { god: false, bighead: false },
   cartridgeBlown: false, // the "blow on the cartridge" gag only happens once per session
+  resumeAtBoss: false, // game over during a boss fight: CONTINUE puts you back at the boss
 };
 
 export function newRun() {
@@ -22,6 +23,14 @@ export function newRun() {
   state.memories = [];
   state.eraIndex = 0;
   state.nextExtraLife = EXTRA_LIFE_EVERY;
+  state.resumeAtBoss = false;
+}
+
+// Read-and-clear: should this era start straight at its boss?
+export function takeResumeAtBoss() {
+  const v = state.resumeAtBoss;
+  state.resumeAtBoss = false;
+  return v;
 }
 
 // Continue after game over: arcade rules — score resets, you keep your progress.

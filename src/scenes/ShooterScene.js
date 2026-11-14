@@ -5,7 +5,7 @@
 import Phaser from 'phaser';
 import { GAME_W, GAME_H, textStyle } from '../config.js';
 import { ERAS } from '../eras/index.js';
-import { state, addScore } from '../state.js';
+import { state, addScore, takeResumeAtBoss } from '../state.js';
 import { playEraMusic, setEraMusicRate, stopMusic, sfx } from '../audio/audio.js';
 import { makeFx } from '../systems/fx.js';
 import Hud from '../systems/hud.js';
@@ -32,6 +32,9 @@ export default class ShooterScene extends Phaser.Scene {
   constructor() { super('Shooter'); }
 
   create(data = {}) {
+    // Phaser reuses scene objects: reset per-run flags every time the scene starts.
+    this.boss = null;
+    this.hud = null;
     this.demo = !!data.demo;
     this.era = ERAS.find((e) => e.scene === 'Shooter');
     this.cameras.main.setBackgroundColor('#05000f');
@@ -60,6 +63,7 @@ export default class ShooterScene extends Phaser.Scene {
     this.saucerTimer = Phaser.Math.Between(12, 18);
     this.buildShields();
     this.startWave();
+    if (!this.demo && takeResumeAtBoss()) { for (const a of this.aliens) a.img.destroy(); this.aliens = []; this.startBoss(); }
 
     this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,A,D,SPACE,N');
     if (this.demo) {
@@ -68,7 +72,11 @@ export default class ShooterScene extends Phaser.Scene {
       this.tweens.add({ targets: ic, alpha: 0, duration: 500, yoyo: true, repeat: -1 });
       this.aiTarget = GAME_W / 2;
       this.time.addEvent({ delay: 700, loop: true, callback: () => { this.aiTarget = Phaser.Math.Between(30, GAME_W - 30); } });
-      this.input.keyboard.once('keydown', () => this.scene.start('Title'));
+      // Any key leaves the demo; C also counts as a coin, like a real cabinet.
+      this.input.keyboard.once('keydown', (e) => {
+        if (e.keyCode === Phaser.Input.Keyboard.KeyCodes.C) { state.credits++; sfx.coinInsert(); }
+        this.scene.start('Title');
+      });
       this.time.delayedCall(22000, () => this.scene.start('Title'));
     } else {
       this.hud = new Hud(this, '80s');
@@ -284,7 +292,7 @@ export default class ShooterScene extends Phaser.Scene {
   }
 
   playerDie() {
-    if (this.dead || this.invuln > 0 || this.demo) return;
+    if (this.dead || this.invuln > 0 || this.demo || this.phase === 'reveal') return;
     if (state.cheats.god) { this.invuln = 1; return; }
     this.dead = true;
     this.fx.sparkle(this.ship.x, this.ship.y, 20);
