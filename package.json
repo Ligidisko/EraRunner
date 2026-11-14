@@ -1,0 +1,32 @@
+{
+  "name": "era-runner",
+  "version": "1.0.0",
+  "description": "8-bit nostalgia runner through the decades (hackathon game)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "zip": "vite build && node scripts/zip.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ligidisko/EraRunner.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Ligidisko/EraRunner/issues"
+  },
+  "homepage": "https://github.com/Ligidisko/EraRunner#readme",
+  "dependencies": {
+    "@fontsource/press-start-2p": "^5.3.0",
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "bestzip": "^4.0.3",
+    "vite": "^8.3.8"
+  },
+  "private": true
+}
